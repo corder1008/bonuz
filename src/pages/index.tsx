@@ -2,7 +2,7 @@
 import Head from "next/head";
 import styles from "@/styles/Home.module.css";
 import { useState } from "react";
-import { useAccount } from "wagmi";
+import { useRouter } from "next/router";
 import Image from "next/image";
 import walletIcon from "../../public/icons/wallet-icon.svg";
 import copyIcon from "../../public/icons/copy-icon.svg";
@@ -13,6 +13,9 @@ import messageIcon from "../../public/icons/message-icon.svg";
 import blockchainIcon from "../../public/icons/blockchain-icon.svg";
 import decentralIcon from "../../public/icons/decentral-icon.svg";
 import dropdownIcon from "../../public/icons/dropdown-icon.svg";
+import cancleIcon from '../../public/icons/arrow-cancle.png';
+import searchIcon from '../../public/icons/search.svg';
+
 
 import Frame1 from "../../public/images/carousel/Frame_1.png";
 import Frame2 from "../../public/images/carousel/Frame_2.png";
@@ -23,16 +26,10 @@ import GoogleIcon from "../../public/icons/apple.png";
 
 export default function Home() {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isNetworkSwitchHighlighted, setIsNetworkSwitchHighlighted] =
-    useState(false);
-  const [isConnectHighlighted, setIsConnectHighlighted] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('')
+  const router = useRouter()
 
   const frames = [Frame1, Frame2, Frame3, Frame4];
-
-  const closeAll = () => {
-    setIsNetworkSwitchHighlighted(false);
-    setIsConnectHighlighted(false);
-  };
 
   function shortenEthereumAddress(address: any) {
     if (address) {
@@ -53,6 +50,14 @@ export default function Home() {
       prevIndex === frames.length - 1 ? 0 : prevIndex + 1
     );
   };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      router.push(`/q=${searchQuery}&filters=all`)
+    }
+  }
+
   return (
     <>
       <Head>
@@ -403,29 +408,19 @@ export default function Home() {
           </div >
           <hr className="flex w-[98%]" />
           <div className="flex justify-between items-center mt-[28px] flex-col md:flex-row md: gap-2">
-            <p className='font-[26px] invisible md:visible'>bonuz</p>
-            <button className="w-[54px] h-[54px] bg-[#c5c5c56b] rounded-[50px] flex justify-center items-center">
-              <svg
-                className="w-3 h-3 text-white"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 14 8"
-              >
-                <path
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="m1 1 5.326 5.7a.909.909 0 0 0 1.348 0L13 1"
-                />
-              </svg>
-            </button>
+            <p className='font-[26px] hidden md:flex'>bonuz</p>
+            <div className="w-[25px] h-[25px] md:w-[30px] md:h-[30px] bg-[url('/icons/up-icon.png')] rounded-[50px] bg-center flex justify-center items-center cursor-pointer" onClick={() => router.push('/')} />
             <button className="rounded-[30px] px-[8px] bg-custom-gradient1">
               Connect Bonuz On-Chain Social ID
             </button>
           </div>
         </div >
+
+        <div className="mt-16 w-full h-[48px] flex justify-between items-center justify-center p-3 pt-0 gap-2 rounded-[30px] border-2 pb-0 pt-0 border-[#9651FF]">
+          <Image src={searchIcon} width={24} height={24} alt="search" />
+          <input name="search" className="w-full bg-transparent font-inter text-base font-normal leading-6 tracking-tight text-left border-none" defaultValue="Search" onChange={(e) => setSearchQuery(e.target.value)} onKeyDown={handleKeyDown} />
+          <Image src={cancleIcon} width={30} height={30} alt="cancle" className="cursor-pointer" />
+        </div>
       </main >
     </>
   );
